@@ -8,7 +8,7 @@ AppJs - Simple app js
 Buuum is available on Bower and can be installed using:
 
 ```
-bower install appjs
+bower install jappjs
 ```
 
 ## Initialize

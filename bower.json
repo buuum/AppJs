@@ -1,0 +1,18 @@
+{
+  "name": "appjs",
+  "homepage": "https://github.com/buuum/AppJs",
+  "description": "Simple js app",
+  "main": [
+    "src/js/appjs.min.js"
+  ],
+  "keywords": [
+    "app"
+  ],
+  "authors": [
+    "buuum"
+  ],
+  "dependencies": {
+    "jquery": ">=3.0"
+  },
+  "license": "MIT"
+}

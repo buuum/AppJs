@@ -1,9 +1,10 @@
 var Utils;
 
-Utils = (function() {
-  function Utils() {}
+Utils = (function () {
+  function Utils() {
+  }
 
-  Utils.merge = function(obj1, obj2) {
+  Utils.merge = function (obj1, obj2) {
     if (obj1 == null) {
       obj1 = {};
     }
@@ -13,7 +14,7 @@ Utils = (function() {
     return $.extend({}, obj1, obj2);
   };
 
-  Utils.round = function(value, precision, mode) {
+  Utils.round = function (value, precision, mode) {
     var f, isHalf, m, sgn, valor;
     precision |= 0;
     m = Math.pow(10, precision);
@@ -36,7 +37,7 @@ Utils = (function() {
     return valor / m;
   };
 
-  Utils.isset = function() {
+  Utils.isset = function () {
     var a, i, l;
     a = arguments;
     l = a.length;
@@ -53,7 +54,7 @@ Utils = (function() {
     return true;
   };
 
-  Utils.realSizes = function(obj, objsize) {
+  Utils.realSizes = function (obj, objsize) {
     var clone, height, height_, width, width_;
     if (objsize == null) {
       objsize = false;
@@ -80,7 +81,7 @@ Utils = (function() {
     };
   };
 
-  Utils.get_class_methods = function(name) {
+  Utils.get_class_methods = function (name) {
     var consname, constructor, method, retArr;
     constructor = void 0;
     retArr = [];
@@ -119,11 +120,11 @@ Utils = (function() {
     };
   };
 
-  Utils.serializeObject = function(obj) {
+  Utils.serializeObject = function (obj) {
     var a, o;
     o = {};
     a = obj.serializeArray();
-    $.each(a, function() {
+    $.each(a, function () {
       if (o[this.name] != null) {
         if (!o[this.name].push) {
           o[this.name] = [o[this.name]];
@@ -142,21 +143,21 @@ Utils = (function() {
 
 var Config;
 
-Config = (function() {
+Config = (function () {
   function Config() {
     this.varconfigs = {
       version: '0.0.1'
     };
   }
 
-  Config.prototype.get = function(attr) {
+  Config.prototype.get = function (attr) {
     if (this.varconfigs[attr] != null) {
       return this.varconfigs[attr];
     }
     return LocalData.get(attr);
   };
 
-  Config.prototype.set = function(attr, value, persist) {
+  Config.prototype.set = function (attr, value, persist) {
     if (persist == null) {
       persist = false;
     }
@@ -174,16 +175,17 @@ Config = new Config();
 
 var Appjs;
 
-Appjs = (function() {
-  function Appjs() {}
+Appjs = (function () {
+  function Appjs() {
+  }
 
-  Appjs.prototype.addController = function(name) {
+  Appjs.prototype.addController = function (name) {
     App[name] = new window[name]();
   };
 
-  Appjs.prototype.addControllers = function(controllers) {
-    $.each(controllers, (function(_this) {
-      return function(i, el) {
+  Appjs.prototype.addControllers = function (controllers) {
+    $.each(controllers, (function (_this) {
+      return function (i, el) {
         _this.addController(el);
       };
     })(this));
@@ -195,22 +197,26 @@ Appjs = (function() {
 
 var Controller;
 
-Controller = (function() {
-  function Controller() {}
+Controller = (function () {
+  function Controller() {
+  }
 
-  Controller.prototype.addEvent = function(event, target, callback, preventdefault) {
+  Controller.prototype.addEvent = function (event, target, callback, preventdefault) {
     if (preventdefault == null) {
       preventdefault = true;
     }
+    if (typeof callback !== "function") {
+      return;
+    }
     if (target === 'window') {
-      return $(window).on(event, (function(_this) {
-        return function(e) {
+      return $(window).on(event, (function (_this) {
+        return function (e) {
           return callback(e);
         };
       })(this));
     } else {
-      return $('body').on(event, target, (function(_this) {
-        return function(e) {
+      return $('body').on(event, target, (function (_this) {
+        return function (e) {
           if (preventdefault) {
             e.preventDefault();
           }
@@ -220,7 +226,7 @@ Controller = (function() {
     }
   };
 
-  Controller.prototype.removeEvent = function(event, target) {
+  Controller.prototype.removeEvent = function (event, target) {
     if (target === 'window') {
       return $(window).off(event);
     } else {
@@ -234,18 +240,19 @@ Controller = (function() {
 
 var Ajax, AjaxService;
 
-AjaxService = (function() {
-  function AjaxService() {}
+AjaxService = (function () {
+  function AjaxService() {
+  }
 
-  AjaxService.prototype.call = function(options) {
+  AjaxService.prototype.call = function (options) {
     return $.ajax({
       type: options.method,
       url: options.url,
       data: options.params,
       dataType: "json",
       timeout: options.timeout,
-      beforeSend: (function(_this) {
-        return function(xhr) {
+      beforeSend: (function (_this) {
+        return function (xhr) {
           if (options.headers) {
             xhr.setRequestHeader("" + options.headers.name, "Bearer " + options.headers.value);
           }
@@ -254,16 +261,16 @@ AjaxService = (function() {
     });
   };
 
-  AjaxService.prototype.callAjax = function(options, callback) {
-    return this.call(options).done((function(_this) {
-      return function(data) {
+  AjaxService.prototype.callAjax = function (options, callback) {
+    return this.call(options).done((function (_this) {
+      return function (data) {
         if (callback) {
           return callback(data, false);
         }
         return data;
       };
-    })(this)).fail((function(_this) {
-      return function(xhr) {
+    })(this)).fail((function (_this) {
+      return function (xhr) {
         if (callback) {
           return callback(xhr, true);
         }
@@ -272,27 +279,27 @@ AjaxService = (function() {
     })(this));
   };
 
-  AjaxService.prototype.get = function(options, callback) {
+  AjaxService.prototype.get = function (options, callback) {
     options = this.getOptions('GET', options);
     return this.callAjax(options, callback);
   };
 
-  AjaxService.prototype.post = function(options, callback) {
+  AjaxService.prototype.post = function (options, callback) {
     options = this.getOptions('POST', options);
     return this.callAjax(options, callback);
   };
 
-  AjaxService.prototype.put = function(options, callback) {
+  AjaxService.prototype.put = function (options, callback) {
     options = this.getOptions('PUT', options);
     return this.callAjax(options, callback);
   };
 
-  AjaxService.prototype["delete"] = function(options, callback) {
+  AjaxService.prototype["delete"] = function (options, callback) {
     options = this.getOptions('DELETE', options);
     return this.callAjax(options, callback);
   };
 
-  AjaxService.prototype.getOptions = function(method, options) {
+  AjaxService.prototype.getOptions = function (method, options) {
     var defaultoptions;
     if (options == null) {
       options = [];
@@ -315,18 +322,19 @@ Ajax = new AjaxService();
 
 var LocalData;
 
-LocalData = (function() {
-  function LocalData() {}
+LocalData = (function () {
+  function LocalData() {
+  }
 
-  LocalData.prototype.clear = function() {
+  LocalData.prototype.clear = function () {
     localStorage.clear();
   };
 
-  LocalData.prototype.remove = function($key) {
+  LocalData.prototype.remove = function ($key) {
     localStorage.removeItem($key);
   };
 
-  LocalData.prototype.add = function($key, $value) {
+  LocalData.prototype.add = function ($key, $value) {
     var err, json;
     try {
       json = JSON.parse($value);
@@ -337,7 +345,7 @@ LocalData = (function() {
     localStorage.setItem($key, json);
   };
 
-  LocalData.prototype.get = function($key) {
+  LocalData.prototype.get = function ($key) {
     var $value, err, salida;
     $value = localStorage.getItem($key);
     salida = false;
